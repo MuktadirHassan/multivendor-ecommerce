@@ -1,0 +1,35 @@
+{
+  "name": "express-ts",
+  "version": "1.2.0",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.10",
+    "esbuild": "^0.24.0",
+    "esbuild-register": "^3.6.0",
+    "nodemon": "^3.1.7",
+    "pino-pretty": "^11.2.2",
+    "prisma": "^5.21.1",
+    "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.21.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.20.0",
+    "pino": "^9.5.0",
+    "zod": "^3.23.8"
+  },
+  "scripts": {
+    "start": "node --enable-source-maps dist/index.js",
+    "dev": "nodemon --exec \"node -r esbuild-register --trace-warnings src/server.ts\" -e .ts | npx pino-pretty",
+    "prebuild": "tsc --noEmit",
+    "build": "node esbuild.config.mjs"
+  }
+}
