@@ -1,0 +1,22 @@
+openapi: "3.0.3"
+info:
+  title: Multi Vendor Ecommerce API
+  version: "1.0"
+servers:
+  - url: https://api.example.com
+    description: Production server
+  - url: http://localhost:5000
+    description: Development server
+paths:
+  /:
+    get:
+      description: "Root endpoint"
+      parameters: []
+      responses:
+        "200":
+          description: OK
+  /test:
+    get:
+      responses:
+        "200":
+          description: OK
