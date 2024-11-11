@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,32 +14,173 @@ enum Role {
   SELLER
 }
 
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
 model User {
-  id      Int       @id @default(autoincrement())
-  email   String    @unique
-  name    String?
-  role    Role      @default(USER)
-  phone   String?
-  Product Product[]
-  Order   Order[]
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  role      Role      @default(USER)
+  phone     String?
+  password  String // Hashed password
+  avatar    String? // URL to avatar image
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  address   Address[]
+  products  Product[] // Products listed by seller
+  orders    Order[] // Orders made by user
+  shop      Shop? // Seller's shop
+  reviews   Review[] // Reviews written by user
+  cart      Cart?
+}
+
+model Shop {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  logo        String? // URL to shop logo
+  banner      String? // URL to shop banner
+  sellerId    Int       @unique
+  seller      User      @relation(fields: [sellerId], references: [id])
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  isVerified  Boolean   @default(false)
+  rating      Float     @default(0)
+  reviews     Review[]
+}
+
+model Address {
+  id         Int     @id @default(autoincrement())
+  userId     Int
+  user       User    @relation(fields: [userId], references: [id])
+  street     String
+  city       String
+  state      String
+  country    String
+  postalCode String
+  isDefault  Boolean @default(false)
+  orders     Order[]
+}
+
+model Category {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  image       String?
+  parentId    Int? // For subcategories
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  products    Product[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Product {
-  id          Int     @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   description String?
   price       Float
   sellerId    Int
-  seller      User    @relation(fields: [sellerId], references: [id])
-  Order       Order[]
+  seller      User        @relation(fields: [sellerId], references: [id])
+  shopId      Int
+  shop        Shop        @relation(fields: [shopId], references: [id])
+  categoryId  Int
+  category    Category    @relation(fields: [categoryId], references: [id])
+  stock       Int         @default(0)
+  images      String[] // Array of image URLs
+  orders      OrderItem[]
+  reviews     Review[]
+  cartItems   CartItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  isActive    Boolean     @default(true)
+  rating      Float       @default(0)
+  discount    Float       @default(0) // Percentage discount
+  sku         String? // Stock keeping unit
 }
 
-model Order {
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
   id        Int     @id @default(autoincrement())
-  userId    Int
-  user      User    @relation(fields: [userId], references: [id])
+  cartId    Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
   productId Int
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
-  total     Float
+}
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  userId        Int
+  user          User          @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+  addressId     Int
+  address       Address       @relation(fields: [addressId], references: [id])
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentMethod String?
+  total         Float
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  tracking      Tracking?
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float // Price at time of purchase
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  shopId    Int
+  shop      Shop     @relation(fields: [shopId], references: [id])
+  rating    Int
+  comment   String?
+  images    String[] // Array of image URLs
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tracking {
+  id         Int      @id @default(autoincrement())
+  orderId    Int      @unique
+  order      Order    @relation(fields: [orderId], references: [id])
+  carrier    String?
+  trackingNo String?
+  status     String?
+  updates    Json[] // Array of tracking updates
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
