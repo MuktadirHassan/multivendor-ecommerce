@@ -12,12 +12,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: [
-    "@nuxt/fonts",
-    "@primevue/nuxt-module",
-    "@vueuse/nuxt",
-    "@nuxtjs/supabase",
-  ],
+  modules: ["@nuxt/fonts", "@primevue/nuxt-module", "@vueuse/nuxt"],
   fonts: {
     experimental: {
       processCSSVariables: true,
@@ -39,8 +34,4 @@ export default defineNuxtConfig({
       },
     },
   },
-  supabase: {
-    redirect: false,
-  },
-  routeRules: {},
 });

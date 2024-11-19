@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="bg-slate-400">
     Home page
-
+    Hello world
   </div>
 </template>
 
