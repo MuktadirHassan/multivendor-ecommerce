@@ -1,0 +1,21 @@
+meta {
+  name: Register new user
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "test@gmail.com",
+    "password": "123123",
+    "name": "Muktadir",
+    "phone": "",
+    "role": ""
+  }
+}

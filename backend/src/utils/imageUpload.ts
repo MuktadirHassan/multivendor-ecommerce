@@ -32,7 +32,7 @@ export async function deleteImage(url: string): Promise<void> {
 
   const { error } = await supabase.storage
     .from(STORAGE_BUCKET)
-    .delete(fileName);
+    .remove([fileName!]);
 
   if (error) {
     throw new Error(`Error deleting image: ${error.message}`);

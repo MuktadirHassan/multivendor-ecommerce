@@ -1,0 +1,15 @@
+meta {
+  name: Check RBAC
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/auth/admin
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzMzNTYzNTE3LCJleHAiOjE3MzM2NDk5MTd9.f6Z-tJRYEzxNW-gtvs543X17KnOHQaYSishjRFGOS8w
+}

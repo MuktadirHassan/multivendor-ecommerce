@@ -1,0 +1,16 @@
+meta {
+  name: Get current user profile
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/auth/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzMzNTYzNTE3LCJleHAiOjE3MzM2NDk5MTd9.f6Z-tJRYEzxNW-gtvs543X17KnOHQaYSishjRFGOS8w
+  
+}
