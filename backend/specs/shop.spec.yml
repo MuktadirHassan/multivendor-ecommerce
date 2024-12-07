@@ -1,0 +1,282 @@
+openapi: 3.0.3
+info:
+  title: Shop Management API
+  version: 1.0.0
+  description: API endpoints for managing shops in multi-vendor e-commerce platform
+
+components:
+  schemas:
+    Shop:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        logo:
+          type: string
+          format: uri
+        banner:
+          type: string
+          format: uri
+        sellerId:
+          type: integer
+        isVerified:
+          type: boolean
+        rating:
+          type: number
+          format: float
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateShopRequest:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 1000
+        logo:
+          type: string
+          format: binary
+        banner:
+          type: string
+          format: binary
+
+    UpdateShopRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 1000
+        logo:
+          type: string
+          format: binary
+        banner:
+          type: string
+          format: binary
+
+    ShopResponse:
+      allOf:
+        - $ref: "#/components/schemas/Shop"
+        - type: object
+          properties:
+            seller:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                email:
+                  type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Forbidden:
+      description: Permission denied
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+paths:
+  /shops:
+    post:
+      tags:
+        - Shops
+      summary: Create a new shop
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateShopRequest"
+      responses:
+        "201":
+          description: Shop created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShopResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+    get:
+      tags:
+        - Shops
+      summary: Get all shops
+      parameters:
+        - name: verified
+          in: query
+          schema:
+            type: boolean
+        - name: rating
+          in: query
+          schema:
+            type: number
+            minimum: 0
+            maximum: 5
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        "200":
+          description: List of shops
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShopResponse"
+
+  /shops/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      tags:
+        - Shops
+      summary: Get shop by ID
+      responses:
+        "200":
+          description: Shop details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShopResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      tags:
+        - Shops
+      summary: Update shop
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/UpdateShopRequest"
+      responses:
+        "200":
+          description: Shop updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShopResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      tags:
+        - Shops
+      summary: Delete shop
+      security:
+        - BearerAuth: []
+      responses:
+        "204":
+          description: Shop deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /shops/{id}/verify:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    post:
+      tags:
+        - Shops
+      summary: Verify shop
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Shop verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShopResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"

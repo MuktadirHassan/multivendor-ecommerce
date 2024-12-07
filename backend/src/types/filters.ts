@@ -12,6 +12,13 @@ export interface ProductFilters {
   limit?: number;
 }
 
+export interface ShopFilters {
+  rating?: number;
+  isVerified?: boolean;
+  page?: number;
+  limit?: number;
+}
+
 export interface ReviewFilters {
   rating?: number;
   sortBy?: "rating" | "createdAt";

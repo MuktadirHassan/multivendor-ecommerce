@@ -9,11 +9,15 @@ import { AuthService } from "./services/auth.service";
 import { AuthController } from "./controllers/auth.controller";
 import { AuthMiddleware } from "./middleware/auth.middleware";
 import { createAuthRouter } from "./routes/auth.routes";
-import { createRouter } from "./routes/product.routes";
+import { createProductRouter } from "./routes/product.routes";
 import { ProductController } from "./controllers/product.controller";
 import { ProductRepository } from "./repositories/product.repository";
 import { ProductService } from "./services/product.service";
 import { db } from "./config/database";
+import { ShopRepository } from "./repositories/shop.repository";
+import { ShopService } from "./services/shop.service";
+import { ShopController } from "./controllers/shop.controller";
+import { createShopRouter } from "./routes/shop.routes";
 
 const userRepository = new UserRepository(db);
 const authRepository = new AuthRepository(db, userRepository);
@@ -25,6 +29,10 @@ const productRepository = new ProductRepository(db);
 const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 
+const shopRepository = new ShopRepository(db);
+const shopService = new ShopService(shopRepository, userRepository);
+const shopController = new ShopController(shopService);
+
 const app = express();
 
 app.use(express.json());
@@ -32,7 +40,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 app.use("/auth", createAuthRouter(authController, authMiddleware));
-app.use("/products", createRouter(productController, authMiddleware));
+app.use("/products", createProductRouter(productController, authMiddleware));
+app.use("/shops", createShopRouter(shopController, authMiddleware));
 
 app.use(handleGlobalError);
 

@@ -6,7 +6,7 @@ import { AuthMiddleware } from "../middleware/auth.middleware";
 
 export const productRouter = Router();
 
-export const createRouter = (
+export const createProductRouter = (
   productController: ProductController,
   authMiddleware: AuthMiddleware
 ) => {

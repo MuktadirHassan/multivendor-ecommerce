@@ -1,0 +1,18 @@
+meta {
+  name: Update shop
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/shops/:id
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  name: 
+  description: 
+  logo: 
+  banner: 
+}
