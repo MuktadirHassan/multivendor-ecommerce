@@ -1,185 +1,170 @@
 import { Request, Response } from "express";
 import { ProductService } from "../services/product.service";
-import { ProductRepository } from "../repositories/postgres/product.repository";
-import { CacheService } from "../services/cache.service";
-import { EventEmitter } from "../utils/eventEmitter";
-import {
-  ValidationError,
-  NotFoundError,
-  AuthorizationError,
-} from "../utils/appError";
+import { uploadImage } from "../utils/imageUpload";
 import { ProductFilters } from "../types/filters";
-import { db } from "../config/database";
-import { GeminiService } from "../services/gemini.service";
+import { Role } from "@prisma/client";
+import catchAsync from "../utils/catchAsync";
+import { ValidationError } from "../utils/appError";
+import sendApiResponse from "../utils/sendApiResponse";
 
 export class ProductController {
-  private readonly productService: ProductService;
-  private readonly geminiService: GeminiService;
-  constructor() {
-    const productRepository = new ProductRepository(db);
-    const cacheService = CacheService.getInstance();
-    const eventEmitter = EventEmitter.getInstance();
-    this.productService = new ProductService(
-      productRepository,
-      cacheService,
-      eventEmitter
+  private productService: ProductService;
+
+  constructor(productService: ProductService) {
+    this.productService = productService;
+  }
+
+  getProducts = catchAsync(async (req: Request, res: Response) => {
+    const filters = req.query as unknown as ProductFilters;
+    const products = await this.productService.findWithFilters(filters);
+    sendApiResponse(res, 200, "Products retrieved successfully", products);
+  });
+
+  getProduct = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const product = await this.productService.findById(Number(id));
+    sendApiResponse(res, 200, "Product retrieved successfully", product);
+  });
+
+  createProduct = catchAsync(async (req: Request, res: Response) => {
+    const files = req.files as Express.Multer.File[];
+    const userId = req.user!.userId;
+    const role = req.user!.role;
+
+    if (!files?.length) {
+      throw new ValidationError("At least one image is required");
+    }
+
+    if (
+      !req.body.name ||
+      !req.body.price ||
+      !req.body.stock ||
+      !req.body.categoryId ||
+      !req.body.shopId
+    ) {
+      throw new ValidationError("Missing required fields");
+    }
+
+    // Upload images
+    const imageUrls = await Promise.all(files.map((file) => uploadImage(file)));
+
+    const productData = {
+      ...req.body,
+      images: imageUrls,
+      sellerId: userId,
+      price: Number(req.body.price),
+      stock: Number(req.body.stock),
+      categoryId: Number(req.body.categoryId),
+      shopId: Number(req.body.shopId),
+    };
+
+    // Verify shop ownership
+    if (role !== Role.ADMIN) {
+      const shop = await this.productService.verifyShopOwnership(
+        productData.shopId,
+        userId
+      );
+      if (!shop) {
+        throw new ValidationError(
+          "Unauthorized to create product for this shop"
+        );
+      }
+    }
+
+    const product = await this.productService.create(productData);
+    sendApiResponse(res, 201, "Product created successfully", product);
+  });
+
+  updateProduct = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const files = req.files as Express.Multer.File[];
+    const userId = req.user!.userId;
+    const role = req.user!.role;
+
+    // Upload new images if provided
+    let imageUrls: string[] = [];
+    if (files?.length) {
+      imageUrls = await Promise.all(files.map((file) => uploadImage(file)));
+    }
+
+    const productData = {
+      ...req.body,
+      ...(imageUrls.length && { images: imageUrls }),
+      ...(req.body.price && { price: Number(req.body.price) }),
+      ...(req.body.stock && { stock: Number(req.body.stock) }),
+      ...(req.body.categoryId && { categoryId: Number(req.body.categoryId) }),
+    };
+
+    // Verify product ownership
+    if (role !== Role.ADMIN) {
+      const canUpdate = await this.productService.verifyProductOwnership(
+        Number(id),
+        userId
+      );
+      if (!canUpdate) {
+        throw new ValidationError("Unauthorized to update this product");
+      }
+    }
+
+    const product = await this.productService.update(Number(id), productData);
+    sendApiResponse(res, 200, "Product updated successfully", product);
+  });
+
+  deleteProduct = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const userId = req.user!.userId;
+    const role = req.user!.role;
+
+    // Verify product ownership
+    if (role !== Role.ADMIN) {
+      const canDelete = await this.productService.verifyProductOwnership(
+        Number(id),
+        userId
+      );
+      if (!canDelete) {
+        throw new ValidationError("Unauthorized to delete this product");
+      }
+    }
+
+    await this.productService.delete(Number(id));
+    sendApiResponse(res, 204, "Product deleted successfully");
+  });
+
+  searchProducts = catchAsync(async (req: Request, res: Response) => {
+    const { q } = req.query;
+    if (!q || typeof q !== "string") {
+      throw new ValidationError("Search query is required");
+    }
+    const products = await this.productService.searchProducts(q);
+    sendApiResponse(
+      res,
+      200,
+      "Search results retrieved successfully",
+      products
     );
-    this.geminiService = new GeminiService(process.env.GEMINI_API_KEY!);
-  }
+  });
 
-  createProduct = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const sellerId = req.user.id; // Assuming user is attached by auth middleware
-      const files = req.files as Express.Multer.File[];
+  getFeaturedProducts = catchAsync(async (req: Request, res: Response) => {
+    const products = await this.productService.findFeatured();
+    sendApiResponse(
+      res,
+      200,
+      "Featured products retrieved successfully",
+      products
+    );
+  });
 
-      const product = await this.productService.createProduct({
-        ...req.body,
-        sellerId,
-        images: files,
-      });
+  getProductsByCategory = catchAsync(async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+    const products = await this.productService.findByCategory(
+      Number(categoryId)
+    );
+    sendApiResponse(res, 200, "Products retrieved successfully", products);
+  });
 
-      res.status(201).json(product);
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  updateProduct = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const sellerId = req.user.id;
-      const productId = parseInt(req.params.id);
-      const files = req.files as Express.Multer.File[];
-
-      const product = await this.productService.updateProduct(
-        productId,
-        {
-          ...req.body,
-          images: files,
-        },
-        sellerId
-      );
-
-      res.json(product);
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  getProduct = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const productId = parseInt(req.params.id);
-      const product = await this.productService.getProduct(productId);
-      res.json(product);
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  getProducts = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const filters = this.parseFilters(req.query);
-      const products = await this.productService.getProducts(filters);
-      res.json(products);
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  searchProducts = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { query } = req.query;
-      if (!query || typeof query !== "string") {
-        throw new ValidationError("Search query is required");
-      }
-
-      const products = await this.productService.searchProducts(query);
-      res.json(products);
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  searchProductsAi = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { query } = req.query;
-      if (!query || typeof query !== "string") {
-        throw new ValidationError("Search query is required");
-      }
-
-      // Get all products with their categories
-      const products = await this.productService.getProducts({});
-
-      const productsAi = await this.geminiService.searchProducts(
-        query,
-        products
-      );
-      res.json(productsAi);
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  deleteProduct = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const sellerId = req.user.id;
-      const productId = parseInt(req.params.id);
-
-      await this.productService.deleteProduct(productId, sellerId);
-      res.status(204).end();
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  updateStock = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const sellerId = req.user.id;
-      const productId = parseInt(req.params.id);
-      const { quantity } = req.body;
-
-      if (typeof quantity !== "number") {
-        throw new ValidationError("Quantity must be a number");
-      }
-
-      const product = await this.productService.updateStock(
-        productId,
-        quantity,
-        sellerId
-      );
-
-      res.json(product);
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  private parseFilters(query: any): ProductFilters {
-    const filters: ProductFilters = {};
-
-    if (query.minPrice) filters.minPrice = parseFloat(query.minPrice);
-    if (query.maxPrice) filters.maxPrice = parseFloat(query.maxPrice);
-    if (query.categoryId) filters.categoryId = parseInt(query.categoryId);
-    if (query.shopId) filters.shopId = parseInt(query.shopId);
-    if (query.inStock) filters.inStock = query.inStock === "true";
-    if (query.rating) filters.rating = parseFloat(query.rating);
-    if (query.sortBy) filters.sortBy = query.sortBy as ProductFilters["sortBy"];
-    if (query.sortOrder) filters.sortOrder = query.sortOrder as "asc" | "desc";
-    if (query.page) filters.page = parseInt(query.page);
-    if (query.limit) filters.limit = parseInt(query.limit);
-
-    return filters;
-  }
-
-  private handleError(error: any, res: Response): void {
-    if (error instanceof ValidationError) {
-      res.status(400).json({ error: error.message });
-    } else if (error instanceof NotFoundError) {
-      res.status(404).json({ error: error.message });
-    } else if (error instanceof AuthorizationError) {
-      res.status(403).json({ error: error.message });
-    } else {
-      console.error("Unexpected error:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  }
+  getProductsByShop = catchAsync(async (req: Request, res: Response) => {
+    const { shopId } = req.params;
+    const products = await this.productService.findByShop(Number(shopId));
+    sendApiResponse(res, 200, "Products retrieved successfully", products);
+  });
 }

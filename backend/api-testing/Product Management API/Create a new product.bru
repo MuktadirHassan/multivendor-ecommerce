@@ -1,15 +1,19 @@
 meta {
-  name: Get current user profile
+  name: Create a new product
   type: http
-  seq: 3
+  seq: 2
 }
 
-get {
-  url: {{baseUrl}}/auth/me
-  body: none
+post {
+  url: {{baseUrl}}/products
+  body: multipartForm
   auth: bearer
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInJvbGUiOiJTRUxMRVIiLCJpYXQiOjE3MzM1NzE3MzMsImV4cCI6MTczMzY1ODEzM30.ylKDasR_H5091yoI4mNF23UQ6k_lko4QnFKN_eX1584
+}
+
+body:multipart-form {
+  images: @file(/home/muktadir/Pictures/Screenshot_২০২৪১২০৫_১২২৪২৯.png)
 }

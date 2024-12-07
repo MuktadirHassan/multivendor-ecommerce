@@ -1,0 +1,11 @@
+meta {
+  name: Update product
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/products/:id
+  body: multipartForm
+  auth: none
+}

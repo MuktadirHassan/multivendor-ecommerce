@@ -1,0 +1,334 @@
+openapi: 3.0.3
+info:
+  title: Product Management API
+  version: 1.0.0
+  description: API endpoints for managing products in multi-vendor e-commerce platform
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+        images:
+          type: array
+          items:
+            type: string
+        categoryId:
+          type: integer
+        shopId:
+          type: integer
+        sellerId:
+          type: integer
+        isActive:
+          type: boolean
+        rating:
+          type: number
+          format: float
+        discount:
+          type: number
+          format: float
+        sku:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProductCreate:
+      type: object
+      required:
+        - name
+        - price
+        - categoryId
+        - shopId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+          default: 0
+        categoryId:
+          type: integer
+        discount:
+          type: number
+          format: float
+          default: 0
+
+    ProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+        categoryId:
+          type: integer
+        isActive:
+          type: boolean
+        discount:
+          type: number
+          format: float
+
+    ProductFilters:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+        categoryId:
+          type: integer
+        minPrice:
+          type: number
+        maxPrice:
+          type: number
+        shopId:
+          type: integer
+        searchQuery:
+          type: string
+        inStock:
+          type: boolean
+        rating:
+          type: number
+          minimum: 0
+          maximum: 5
+        sortBy:
+          type: string
+          enum: [price, rating, createdAt]
+        sortOrder:
+          type: string
+          enum: [asc, desc]
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error, fail]
+        message:
+          type: string
+        error:
+          type: object
+
+paths:
+  /products:
+    get:
+      summary: List products with filters
+      parameters:
+        - in: query
+          name: filters
+          schema:
+            $ref: "#/components/schemas/ProductFilters"
+      responses:
+        200:
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+    post:
+      summary: Create a new product
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/ProductCreate"
+                - type: object
+                  properties:
+                    images:
+                      type: array
+                      items:
+                        type: string
+                        format: binary
+      responses:
+        201:
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /products/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get product by ID
+      responses:
+        200:
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      summary: Update product
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/ProductUpdate"
+                - type: object
+                  properties:
+                    images:
+                      type: array
+                      items:
+                        type: string
+                        format: binary
+      responses:
+        200:
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Invalid input
+        401:
+          description: Unauthorized
+        404:
+          description: Product not found
+
+    delete:
+      summary: Delete product
+      security:
+        - BearerAuth: []
+      responses:
+        204:
+          description: Product deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Product not found
+
+  /products/shop/{shopId}:
+    get:
+      summary: Get products by shop
+      parameters:
+        - name: shopId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /products/category/{categoryId}:
+    get:
+      summary: Get products by category
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /products/search:
+    get:
+      summary: Search products
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /products/featured:
+    get:
+      summary: Get featured products
+      responses:
+        200:
+          description: List of featured products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"

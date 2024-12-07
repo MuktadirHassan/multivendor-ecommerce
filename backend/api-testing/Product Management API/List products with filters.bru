@@ -1,0 +1,15 @@
+meta {
+  name: List products with filters
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/products
+  body: none
+  auth: none
+}
+
+params:query {
+  ~filters: 
+}
