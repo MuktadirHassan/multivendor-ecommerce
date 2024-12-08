@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "E-commerce Category API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

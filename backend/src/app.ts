@@ -18,6 +18,10 @@ import { ShopRepository } from "./repositories/shop.repository";
 import { ShopService } from "./services/shop.service";
 import { ShopController } from "./controllers/shop.controller";
 import { createShopRouter } from "./routes/shop.routes";
+import { CategoryRepository } from "./repositories/category.repository";
+import { CategoryService } from "./services/category.service";
+import { CategoryController } from "./controllers/category.controller";
+import { createCategoryRouter } from "./routes/category.routes";
 
 const userRepository = new UserRepository(db);
 const authRepository = new AuthRepository(db, userRepository);
@@ -33,6 +37,10 @@ const shopRepository = new ShopRepository(db);
 const shopService = new ShopService(shopRepository, userRepository);
 const shopController = new ShopController(shopService);
 
+const categoryRepository = new CategoryRepository(db);
+const categoryService = new CategoryService(categoryRepository);
+const categoryController = new CategoryController(categoryService);
+
 const app = express();
 
 app.use(express.json());
@@ -42,6 +50,10 @@ app.use(morgan("dev"));
 app.use("/auth", createAuthRouter(authController, authMiddleware));
 app.use("/products", createProductRouter(productController, authMiddleware));
 app.use("/shops", createShopRouter(shopController, authMiddleware));
+app.use(
+  "/categories",
+  createCategoryRouter(categoryController, authMiddleware)
+);
 
 app.use(handleGlobalError);
 

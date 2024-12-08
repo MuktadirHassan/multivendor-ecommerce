@@ -1,0 +1,15 @@
+meta {
+  name: Get subcategories
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/categories/:id/subcategories
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

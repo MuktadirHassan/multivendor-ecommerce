@@ -405,6 +405,7 @@ export class ProductRepository implements IProductRepository {
 
   async verifyShopOwnership(shopId: number, userId: number): Promise<boolean> {
     try {
+      logger.info(`verifying shop: ${shopId} for user: ${userId}`);
       const shop = await this.prisma.shop.findFirst({
         where: {
           id: shopId,

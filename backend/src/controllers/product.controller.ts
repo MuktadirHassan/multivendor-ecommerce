@@ -4,7 +4,7 @@ import { uploadImage } from "../utils/imageUpload";
 import { ProductFilters } from "../types/filters";
 import { Role } from "@prisma/client";
 import catchAsync from "../utils/catchAsync";
-import { ValidationError } from "../utils/appError";
+import { AuthorizationError, ValidationError } from "../utils/appError";
 import sendApiResponse from "../utils/sendApiResponse";
 
 export class ProductController {
@@ -65,7 +65,7 @@ export class ProductController {
         userId
       );
       if (!shop) {
-        throw new ValidationError(
+        throw new AuthorizationError(
           "Unauthorized to create product for this shop"
         );
       }

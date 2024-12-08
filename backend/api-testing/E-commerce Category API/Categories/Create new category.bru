@@ -1,0 +1,20 @@
+meta {
+  name: Create new category
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/categories
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "",
+    "description": "",
+    "image": "",
+    "parentId": ""
+  }
+}

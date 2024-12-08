@@ -7,12 +7,16 @@ meta {
 post {
   url: {{baseUrl}}/shops
   body: multipartForm
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInJvbGUiOiJTRUxMRVIiLCJpYXQiOjE3MzM2MzQ3OTgsImV4cCI6MTczMzcyMTE5OH0.pwC5n9mdo22dh3drckdfIvxftqRT4RCqOyH1eM6QGCg
 }
 
 body:multipart-form {
-  name: 
-  description: 
-  logo: 
-  banner: 
+  name: Tui
+  description: Tui tui shop
+  logo: @file(/home/muktadir/Pictures/Screenshot_২০২৪১০০১_২২০৭২৮.png)
+  banner: @file(/home/muktadir/Pictures/Screenshot_২০২৪১২০৫_১২২৪২৯.png)
 }

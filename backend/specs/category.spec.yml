@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: E-commerce Category API
+  version: 1.0.0
+  description: Category management endpoints for multi-vendor e-commerce platform
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+        parentId:
+          type: integer
+          nullable: true
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/Category"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateCategoryRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+        parentId:
+          type: integer
+
+    UpdateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+        parentId:
+          type: integer
+
+paths:
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Get all categories
+      parameters:
+        - in: query
+          name: includeSubcategories
+          schema:
+            type: boolean
+          description: Include subcategories in response
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+    post:
+      tags:
+        - Categories
+      summary: Create new category
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategoryRequest"
+      responses:
+        "201":
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Get category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Category details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+    put:
+      tags:
+        - Categories
+      summary: Update category
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCategoryRequest"
+      responses:
+        "200":
+          description: Category updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+    delete:
+      tags:
+        - Categories
+      summary: Delete category
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Category deleted
+
+  /categories/{id}/subcategories:
+    get:
+      tags:
+        - Categories
+      summary: Get subcategories
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of subcategories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"

@@ -1,0 +1,15 @@
+meta {
+  name: Get all categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/categories
+  body: none
+  auth: none
+}
+
+params:query {
+  ~includeSubcategories: 
+}
