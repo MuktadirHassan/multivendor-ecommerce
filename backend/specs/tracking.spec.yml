@@ -1,0 +1,207 @@
+openapi: 3.0.3
+info:
+  title: E-commerce Tracking API
+  version: 1.0.0
+  description: Order tracking endpoints for multi-vendor e-commerce platform
+
+components:
+  schemas:
+    Tracking:
+      type: object
+      properties:
+        id:
+          type: integer
+        orderId:
+          type: integer
+        carrier:
+          type: string
+        trackingNo:
+          type: string
+        status:
+          type: string
+        updates:
+          type: array
+          items:
+            type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TrackingUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+        carrier:
+          type: string
+        trackingNo:
+          type: string
+        update:
+          type: object
+
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success, error]
+        message:
+          type: string
+        data:
+          type: object
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /tracking/order/{orderId}:
+    get:
+      summary: Get tracking info by order ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Tracking info retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+    post:
+      summary: Create tracking for order
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrackingUpdate"
+      responses:
+        "201":
+          description: Tracking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+  /tracking/{id}:
+    put:
+      summary: Update tracking info
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrackingUpdate"
+      responses:
+        "200":
+          description: Tracking updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+    delete:
+      summary: Delete tracking
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Tracking deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+  /tracking/{id}/status:
+    patch:
+      summary: Update tracking status
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+      responses:
+        "200":
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+  /tracking/{id}/updates:
+    post:
+      summary: Add tracking update
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - update
+              properties:
+                update:
+                  type: object
+      responses:
+        "200":
+          description: Update added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
