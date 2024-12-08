@@ -1,0 +1,15 @@
+meta {
+  name: Get reviews by shop
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/reviews/shop/:shopId
+  body: none
+  auth: none
+}
+
+params:path {
+  shopId: 
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Create a new review
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/reviews
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "productId": "",
+    "rating": "",
+    "comment": "",
+    "images": []
+  }
+}

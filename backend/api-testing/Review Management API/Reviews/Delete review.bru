@@ -1,0 +1,15 @@
+meta {
+  name: Delete review
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/reviews/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

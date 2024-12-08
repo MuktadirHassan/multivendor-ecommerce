@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Review Management API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Update review
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/reviews/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 
+}

@@ -1,0 +1,250 @@
+openapi: 3.0.3
+info:
+  title: Review Management API
+  version: 1.0.0
+  description: API endpoints for managing product and shop reviews
+
+components:
+  schemas:
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        productId:
+          type: integer
+        shopId:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - userId
+        - productId
+        - shopId
+        - rating
+
+    ReviewResponse:
+      allOf:
+        - $ref: "#/components/schemas/Review"
+        - type: object
+          properties:
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                avatar:
+                  type: string
+
+    CreateReviewRequest:
+      type: object
+      properties:
+        productId:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+      required:
+        - productId
+        - rating
+
+    ReviewFilters:
+      type: object
+      properties:
+        productId:
+          type: integer
+        shopId:
+          type: integer
+        userId:
+          type: integer
+        rating:
+          type: integer
+        sortBy:
+          type: string
+          enum: [createdAt, rating]
+        sortOrder:
+          type: string
+          enum: [asc, desc]
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+
+paths:
+  /reviews:
+    get:
+      summary: Get all reviews with filters
+      tags: [Reviews]
+      parameters:
+        - in: query
+          name: productId
+          schema:
+            type: integer
+        - in: query
+          name: shopId
+          schema:
+            type: integer
+        - in: query
+          name: rating
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReviewResponse"
+    post:
+      summary: Create a new review
+      tags: [Reviews]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReviewRequest"
+      responses:
+        201:
+          description: Review created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+
+  /reviews/{id}:
+    get:
+      summary: Get review by ID
+      tags: [Reviews]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Review details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+
+    put:
+      summary: Update review
+      tags: [Reviews]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReviewRequest"
+      responses:
+        200:
+          description: Review updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewResponse"
+
+    delete:
+      summary: Delete review
+      tags: [Reviews]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Review deleted
+
+  /reviews/product/{productId}:
+    get:
+      summary: Get reviews by product
+      tags: [Reviews]
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Product reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReviewResponse"
+
+  /reviews/shop/{shopId}:
+    get:
+      summary: Get reviews by shop
+      tags: [Reviews]
+      parameters:
+        - in: path
+          name: shopId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Shop reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReviewResponse"

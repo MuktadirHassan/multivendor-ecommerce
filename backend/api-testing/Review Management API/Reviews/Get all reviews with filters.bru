@@ -1,0 +1,19 @@
+meta {
+  name: Get all reviews with filters
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/reviews
+  body: none
+  auth: none
+}
+
+params:query {
+  ~productId: 
+  ~shopId: 
+  ~rating: 
+  ~page: 
+  ~limit: 
+}
