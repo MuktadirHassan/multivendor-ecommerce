@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: E-commerce Search API
+  version: 1.0.0
+  description: API for natural language product search and recommendations
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        rating:
+          type: number
+          format: float
+        images:
+          type: array
+          items:
+            type: string
+        category:
+          $ref: "#/components/schemas/Category"
+        shop:
+          $ref: "#/components/schemas/Shop"
+        similarity:
+          type: number
+          format: float
+          description: Semantic similarity score
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+
+    Shop:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        rating:
+          type: number
+        isVerified:
+          type: boolean
+
+    ProductFilters:
+      type: object
+      properties:
+        categoryId:
+          type: integer
+        minPrice:
+          type: number
+        maxPrice:
+          type: number
+        rating:
+          type: number
+        inStock:
+          type: boolean
+        sortBy:
+          type: string
+          enum: [price, rating, createdAt]
+        sortOrder:
+          type: string
+          enum: [asc, desc]
+
+    SearchResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        error:
+          type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+paths:
+  /search:
+    get:
+      tags:
+        - Search
+      summary: Search products using natural language
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+          description: Natural language search query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductFilters"
+      responses:
+        "200":
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /search/recommendations:
+    get:
+      tags:
+        - Search
+      summary: Get personalized product recommendations
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Recommendations retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"

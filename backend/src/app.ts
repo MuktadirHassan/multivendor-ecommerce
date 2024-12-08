@@ -37,6 +37,10 @@ import { ReviewService } from "./services/review.service";
 import { ShopService } from "./services/shop.service";
 import { TrackingService } from "./services/tracking.service";
 import { handleGlobalError } from "./utils/Error";
+import { GeminiService } from "./services/gemini.service";
+import { SearchService } from "./services/ai-search.service";
+import { SearchController } from "./controllers/ai-search.controller";
+import { createSearchRouter } from "./routes/ai-search.routes";
 
 const userRepository = new UserRepository(db);
 const authRepository = new AuthRepository(db, userRepository);
@@ -76,6 +80,14 @@ const trackingRepository = new TrackingRepository(db);
 const trackingService = new TrackingService(trackingRepository);
 const trackingController = new TrackingController(trackingService);
 
+const geminiService = new GeminiService(process.env.GEMINI_API_KEY!);
+const searchService = new SearchService(
+  geminiService,
+  productRepository,
+  orderRepository
+);
+const searchController = new SearchController(searchService);
+
 const app = express();
 
 app.use(express.json());
@@ -93,6 +105,7 @@ app.use("/reviews", createReviewRouter(reviewController, authMiddleware));
 app.use("/addresses", createAddressRouter(addressController, authMiddleware));
 app.use("/orders", createOrderRouter(orderController, authMiddleware));
 app.use("/tracking", createTrackingRouter(trackingController, authMiddleware));
+app.use("/search", createSearchRouter(searchController, authMiddleware));
 
 app.use(handleGlobalError);
 
