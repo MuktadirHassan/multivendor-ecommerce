@@ -1,7 +1,7 @@
 <template>
   <div class="bg-slate-400">
     Home page
-    Hello world
+    Hi tamim
   </div>
 </template>
 
