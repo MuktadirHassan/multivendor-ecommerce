@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import { Redis } from "@upstash/redis";
 
 export class CacheService {
   private redis: Redis;
@@ -6,8 +6,8 @@ export class CacheService {
 
   private constructor() {
     this.redis = new Redis({
-      path: process.env.UPSTASH_REDIS_URL as string,
-      keyPrefix: "ecommerce:",
+      url: process.env.UPSTASH_REDIS_URL as string,
+      token: process.env.UPSTASH_REDIS_TOKEN as string,
     });
   }
 
@@ -19,12 +19,14 @@ export class CacheService {
   }
 
   async get<T>(key: string): Promise<T | null> {
-    const data = await this.redis.get(key);
+    const data = (await this.redis.get(key)) as string;
     return data ? JSON.parse(data) : null;
   }
 
   async set(key: string, value: any, ttl: number): Promise<void> {
-    await this.redis.set(key, JSON.stringify(value), "EX", ttl);
+    await this.redis.set(key, JSON.stringify(value), {
+      ex: ttl,
+    });
   }
 
   async delete(key: string): Promise<void> {
