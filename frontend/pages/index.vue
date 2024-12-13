@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-slate-400">
-    Home page
-    Hi tamim
+  <div>
+    <h1>Welcome to Home Page</h1>
+  
   </div>
 </template>
 
-<script lang="ts" setup>
-
+<script>
+export default {
+  name: 'Home',
+};
 </script>
-
-<style></style>
