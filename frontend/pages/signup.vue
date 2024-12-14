@@ -2,13 +2,18 @@
   <div class="container">
     <div class="logo">Sundarban</div>
     <div class="form-container">
-      <h2>Sign in</h2>
-      <form @submit.prevent="handleSubmit">
+      <h2>Create an account</h2>
+      <p>Enter your details below</p>
+      <form @submit.prevent="createAccount">
+        <input type="text" v-model="name" placeholder="Name" required />
         <input type="email" v-model="email" placeholder="Email or Phone Number" required />
         <input type="password" v-model="password" placeholder="Password" required />
-        <button type="submit" class="btn">Login</button>
+        <button type="submit" class="btn">Create Account</button>
       </form>
-      <a href="#">Forgot Password?</a>
+      <button class="google-signup">Sign up with Google</button>
+      <p>
+        Already have an account? <a href="/login">Log in</a>
+      </p>
     </div>
   </div>
 </template>
@@ -17,13 +22,14 @@
 export default {
   data() {
     return {
-      email: '',
-      password: '',
+      name: "",
+      email: "",
+      password: "",
     };
   },
   methods: {
-    handleSubmit() {
-      alert(`Logged in with Email: ${this.email}`);
+    createAccount() {
+      alert("Account created successfully!");
     },
   },
 };
@@ -90,5 +96,14 @@ body {
   font-size: 14px;
   color: #ff4d4d;
   text-decoration: none;
+}
+.google-signup {
+  width: 100%;
+  padding: 10px;
+  background-color: #4285f4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>

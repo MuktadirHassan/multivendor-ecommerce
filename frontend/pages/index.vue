@@ -1,12 +1,17 @@
 <template>
   <div>
-    <h1>Welcome to Home Page</h1>
-  
+    <h1>Welcome to My Nuxt App</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Home',
+  name: "HomePage",
 };
 </script>
+
+<style scoped>
+h1 {
+  color: #333;
+}
+</style>
