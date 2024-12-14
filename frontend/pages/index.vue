@@ -1,6 +1,6 @@
 <template>
   <div class="bg-slate-400">
-    Home page
+    Home page Learning Project
     Hello world
   </div>
 </template>
