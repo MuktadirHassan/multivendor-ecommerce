@@ -1,40 +1,9 @@
 <template>
-   <div class="max-w-6xl mx-auto p-4 font-sans">
-   <!-- Header -->
-   <header class="flex justify-between items-center py-4 border-b">
-     <!-- Logo -->
-     <h5 class="text-2xl font-bold">Sundarban</h5>
-
-     <!-- Navigation -->
-     <nav class="flex space-x-6">
-       <a href="#" class="text-gray-700 hover:text-black">Home</a>
-       <a href="#" class="text-gray-700 hover:text-black">Contact</a>
-       <a href="#" class="text-gray-700 hover:text-black">About</a>
-       <a href="#" class="text-gray-700 hover:text-black">Sign Up</a>
-     </nav>
-
-     <!-- Search Bar and Icons -->
-     <div class="flex items-center space-x-4">
-       <!-- Search Bar -->
-       <div class="relative">
-         <input
-           type="text"
-           placeholder="What are you looking for?"
-           class="border px-4 py-1 pl-10 w-64 text-gray-600 text-sm rounded"
-         />
-         <i class="fa fa-search absolute left-3 top-2 text-gray-400"></i>
-       </div>
-
-       <!-- Icons -->
-       <i class="fa fa-heart text-gray-600 hover:text-black cursor-pointer"></i>
-       <i class="fa fa-shopping-cart text-gray-600 hover:text-black cursor-pointer"></i>
-       <i class="fa fa-user text-gray-600 hover:text-black cursor-pointer"></i>
-     </div>
-   </header>
+  <div class="wishlist-container">
     <!-- Wishlist Header -->
     <div class="wishlist-header">
-      <h3>Wishlist (4)</h3>
-      <button class="move-to-bag">Move All To Bag</button>
+      <h3>Available</h3>
+      <button class="move-to-bag">See All</button>
     </div>
 
     <!-- Wishlist Grid -->
@@ -49,48 +18,59 @@
         <!-- Product Details -->
         <div class="product-details">
           <button class="btn btn-dark w-100 add-to-cart">
-  <i class="fa fa-shopping-cart mr-2"></i> Add To Cart
-</button>
+            <i class="fa fa-shopping-cart mr-2"></i> Add To Cart
+          </button>
           <h4>{{ product.name }}</h4>
           <p>
             <span class="price">${{ product.price }}</span>
             <del v-if="product.oldPrice" class="old-price">${{ product.oldPrice }}</del>
           </p>
+          <!-- Rating -->
+          <div class="flex justify-center items-center mt-2">
+            <!-- Filled Stars -->
+            <span v-for="n in product.rating || 0" :key="'filled-' + n" class="text-yellow-500">&#9733;</span>
+            <!-- Empty Stars -->
+            <span v-for="n in 5 - (product.rating || 0)" :key="'empty-' + n" class="text-gray-300">&#9733;</span>
+            <!-- Reviews Count -->
+            <span class="text-gray-500 ml-2">({{ product.reviews || 0 }})</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <WishlistFinal/>
-  <Footer/>
 </template>
 
 <script>
-import Footer from '~/components/Footer.vue';
-
 export default {
   data() {
     return {
       products: [
         {
-          name: "Gucci duffle bag",
+          name: "Sunglasses",
           price: 960,
-          oldPrice: 1160,
-          discount: 35,
+          rating: 4,
+          reviews: 25,
           image: "https://via.placeholder.com/250x250",
         },
         {
-          name: "RGB liquid CPU Cooler",
+          name: "Necklace",
           price: 1960,
           image: "https://via.placeholder.com/250x250",
         },
         {
-          name: "GP11 Shooter USB Gamepad",
+          name: "Watch",
+          oldPrice:750,
           price: 550,
+          rating: 4,
+          discount: 30,
+          reviews: 15,
           image: "https://via.placeholder.com/250x250",
         },
         {
-          name: "Quilted Satin Jacket",
+          name: "Purse",
           price: 750,
+          rating: 4,
+          reviews: 10,
           image: "https://via.placeholder.com/250x250",
         },
       ],

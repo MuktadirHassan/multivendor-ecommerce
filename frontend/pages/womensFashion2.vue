@@ -1,40 +1,9 @@
 <template>
-   <div class="max-w-6xl mx-auto p-4 font-sans">
-   <!-- Header -->
-   <header class="flex justify-between items-center py-4 border-b">
-     <!-- Logo -->
-     <h5 class="text-2xl font-bold">Sundarban</h5>
-
-     <!-- Navigation -->
-     <nav class="flex space-x-6">
-       <a href="#" class="text-gray-700 hover:text-black">Home</a>
-       <a href="#" class="text-gray-700 hover:text-black">Contact</a>
-       <a href="#" class="text-gray-700 hover:text-black">About</a>
-       <a href="#" class="text-gray-700 hover:text-black">Sign Up</a>
-     </nav>
-
-     <!-- Search Bar and Icons -->
-     <div class="flex items-center space-x-4">
-       <!-- Search Bar -->
-       <div class="relative">
-         <input
-           type="text"
-           placeholder="What are you looking for?"
-           class="border px-4 py-1 pl-10 w-64 text-gray-600 text-sm rounded"
-         />
-         <i class="fa fa-search absolute left-3 top-2 text-gray-400"></i>
-       </div>
-
-       <!-- Icons -->
-       <i class="fa fa-heart text-gray-600 hover:text-black cursor-pointer"></i>
-       <i class="fa fa-shopping-cart text-gray-600 hover:text-black cursor-pointer"></i>
-       <i class="fa fa-user text-gray-600 hover:text-black cursor-pointer"></i>
-     </div>
-   </header>
+  <div class="wishlist-container">
     <!-- Wishlist Header -->
     <div class="wishlist-header">
-      <h3>Wishlist (4)</h3>
-      <button class="move-to-bag">Move All To Bag</button>
+      <h3>Upcoming</h3>
+      <button class="move-to-bag">See All</button>
     </div>
 
     <!-- Wishlist Grid -->
@@ -60,36 +29,30 @@
       </div>
     </div>
   </div>
-  <WishlistFinal/>
-  <Footer/>
 </template>
 
 <script>
-import Footer from '~/components/Footer.vue';
-
 export default {
   data() {
     return {
       products: [
         {
-          name: "Gucci duffle bag",
+          name: "Makeup setting Spray",
           price: 960,
-          oldPrice: 1160,
-          discount: 35,
           image: "https://via.placeholder.com/250x250",
         },
         {
-          name: "RGB liquid CPU Cooler",
-          price: 1960,
+          name: "Mascara",
+          price: 760,
           image: "https://via.placeholder.com/250x250",
         },
         {
-          name: "GP11 Shooter USB Gamepad",
+          name: "Eye Liner",
           price: 550,
           image: "https://via.placeholder.com/250x250",
         },
         {
-          name: "Quilted Satin Jacket",
+          name: "Lipstick",
           price: 750,
           image: "https://via.placeholder.com/250x250",
         },

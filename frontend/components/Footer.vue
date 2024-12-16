@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; Copyright Rimel 2022. All right reserved</p>
+          <p>&copy; Copyright puja 2024. All right reserved</p>
         </div>
       </footer>
     </div>

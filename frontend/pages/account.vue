@@ -1,21 +1,36 @@
 <template>
-    <div class="container">
-      <header class="navbar">
-        <div class="brand">Sundarban</div>
-        <nav class="nav-links">
-          <a href="#" class="active">Home</a>
-          <a href="#">Contact</a>
-          <a href="#">About</a>
-          <a href="#">Sign Up</a>
-        </nav>
-        <div class="search-cart">
-          <input type="text" placeholder="What are you looking for?" class="search-box" />
-          <i class="fas fa-search"></i>
-          <i class="far fa-heart"></i>
-          <i class="fas fa-shopping-cart"></i>
-          <div class="profile-icon">R</div>
+   <div class="max-w-6xl mx-auto p-4 font-sans">
+    <!-- Header -->
+    <header class="flex justify-between items-center py-4 border-b">
+      <!-- Logo -->
+      <h5 class="text-2xl font-bold">Sundarban</h5>
+
+      <!-- Navigation -->
+      <nav class="flex space-x-6">
+        <a href="#" class="text-gray-700 hover:text-black">Home</a>
+        <a href="#" class="text-gray-700 hover:text-black">Contact</a>
+        <a href="#" class="text-gray-700 hover:text-black">About</a>
+        <a href="#" class="text-gray-700 hover:text-black">Sign Up</a>
+      </nav>
+
+      <!-- Search Bar and Icons -->
+      <div class="flex items-center space-x-4">
+        <!-- Search Bar -->
+        <div class="relative">
+          <input
+            type="text"
+            placeholder="What are you looking for?"
+            class="border px-4 py-1 pl-10 w-64 text-gray-600 text-sm rounded"
+          />
+          <i class="fa fa-search absolute left-3 top-2 text-gray-400"></i>
         </div>
-      </header>
+
+        <!-- Icons -->
+        <i class="fa fa-heart text-gray-600 hover:text-black cursor-pointer"></i>
+        <i class="fa fa-shopping-cart text-gray-600 hover:text-black cursor-pointer"></i>
+        <i class="fa fa-user text-gray-600 hover:text-black cursor-pointer"></i>
+      </div>
+    </header>
   
       <main class="content">
         <aside class="sidebar">
@@ -87,9 +102,12 @@
         </section>
       </main>
     </div>
+    <Footer/>
   </template>
   
   <script>
+import Footer from '~/components/Footer.vue';
+
   export default {
     name: "AccountPage",
   };

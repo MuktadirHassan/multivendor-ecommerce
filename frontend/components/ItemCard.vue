@@ -1,232 +1,239 @@
 <template>
-  <div class="container mx-auto px-4 py-6">
-    <!-- Categories Section -->
-    <section class="mb-8">
-      <h2 class="text-red-500 font-bold mb-3 flex items-center">
-        <span class="inline-block w-2 h-6 bg-red-500 mr-2"></span>
-        Categories
-      </h2>
-      <h3 class="text-2xl font-semibold mb-6">Browse By Category</h3>
-      <div class="grid grid-cols-6 gap-4">
-        <div v-for="(category, index) in categories" :key="index" class="text-center">
-          <div
-            :class="['rounded-lg p-4 border cursor-pointer', selectedCategory === index ? 'bg-red-500 text-white' : 'bg-gray-100']"
-            @click="selectedCategory = index">
-            <img :src="category.icon" alt="category.name" class="mx-auto mb-2 w-8 h-8" />
-            <p>{{ category.name }}</p>
+  <div class="flash-sales-page">
+    <!-- Flash Sales Section -->
+    <section class="flash-sales">
+      <!-- Header -->
+      <div class="flash-header">
+        <div class="header-text">
+          <h4 class="today-text">Today's</h4>
+          <h2 class="flash-title">Flash Sales</h2>
+        </div>
+        <!-- Timer -->
+        <div class="timer">
+          <div class="timer-box">
+            <span class="timer-value">03</span>
+            <span class="timer-label">Days</span>
+          </div>
+          <div class="dots">:</div>
+          <div class="timer-box">
+            <span class="timer-value">23</span>
+            <span class="timer-label">Hours</span>
+          </div>
+          <div class="dots">:</div>
+          <div class="timer-box">
+            <span class="timer-value">19</span>
+            <span class="timer-label">Minutes</span>
+          </div>
+          <div class="dots">:</div>
+          <div class="timer-box">
+            <span class="timer-value">56</span>
+            <span class="timer-label">Seconds</span>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Best Selling Products -->
-    <section>
-      <h2 class="text-red-500 font-bold mb-3 flex items-center">
-        <span class="inline-block w-2 h-6 bg-red-500 mr-2"></span>
-        This Month
-      </h2>
-      <div class="flex justify-between mb-6">
-        <h3 class="text-2xl font-semibold">Best Selling Products</h3>
-        <button class="bg-red-500 text-white px-4 py-2 rounded">View All</button>
-      </div>
-      <div class="grid grid-cols-4 gap-6">
-        <div v-for="(product, index) in bestSellingProducts" :key="index"
-          class="text-center border p-4 rounded-lg relative">
-          <!-- Heart and Eye Icons -->
-          <button class="absolute top-2 right-8 bg-red-500 text-white p-1 rounded-full">♥</button>
-          <button class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full">👀</button>
-
-          <!-- Product Image -->
-          <img :src="product.image" alt="product.name" class="mx-auto mb-4 w-28 h-28" />
-
-          <!-- Product Details -->
-          <h4 class="font-semibold mb-2">{{ product.name }}</h4>
-          <p>
-            <span class="text-red-500 font-bold mr-2">${{ product.discountPrice }}</span>
-            <span class="line-through text-gray-400">${{ product.originalPrice }}</span>
-          </p>
-          <div class="flex justify-center mt-2">
-            <span v-for="n in 5" :key="n" class="text-yellow-500">&#9733;</span>
-            <span class="text-gray-500 ml-2">(65)</span>
-          </div>
+      <!-- Flash Sale Items -->
+      <div class="flash-items">
+        <!-- Product 1 -->
+        <div class="flash-item">
+          <span class="discount">-44%</span>
+          <img src="https://via.placeholder.com/150" alt="Gamepad" />
+          <p class="product-name">HAVIT HV-G92 Gamepad</p>
+          <p class="price">$120 <del>$160</del></p>
+          <div class="rating">★★★★★ (88)</div>
+        </div>
+        <!-- Product 2 -->
+        <div class="flash-item">
+          <span class="discount">-30%</span>
+          <img src="https://via.placeholder.com/150" alt="Keyboard" />
+          <p class="product-name">AK-900 Wired Keyboard</p>
+          <p class="price">$90 <del>$130</del></p>
+          <button class="btn-cart">Add To Cart</button>
+        </div>
+        <!-- Product 3 -->
+        <div class="flash-item">
+          <span class="discount">-50%</span>
+          <img src="https://via.placeholder.com/150" alt="Monitor" />
+          <p class="product-name">IPS LCD Gaming Monitor</p>
+          <p class="price">$370 <del>$400</del></p>
+          <div class="rating">★★★★★ (99)</div>
+        </div>
+        <!-- Product 4 -->
+        <div class="flash-item">
+          <span class="discount">-30%</span>
+          <img src="https://via.placeholder.com/150" alt="Chair" />
+          <p class="product-name">S-Series Comfort Chair</p>
+          <p class="price">$375 <del>$450</del></p>
+          <div class="rating">★★★★☆ (49)</div>
         </div>
       </div>
-    </section>
 
-    <!-- Products Section -->
-    <section class="mt-10">
-      <h2 class="text-red-500 font-bold mb-3 flex items-center">
-        <span class="inline-block w-2 h-6 bg-red-500 mr-2"></span>
-        Our Products
-      </h2>
-      <h3 class="text-2xl font-semibold mb-6">Explore Our Products</h3>
-      <div class="grid grid-cols-4 gap-6">
-        <div v-for="(product, index) in products" :key="index" class="text-center border p-4 rounded-lg relative">
-          <!-- Heart and Eye Icons -->
-          <button class="absolute top-2 right-8 bg-red-500 text-white p-1 rounded-full">♥</button>
-          <button class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full">👁</button>
-
-          <!-- Product Image -->
-          <img :src="product.image" alt="product.name" class="mx-auto mb-4 w-28 h-28" />
-
-          <!-- Product Details -->
-          <h4 class="font-semibold mb-2">{{ product.name }}</h4>
-          <p>
-            <span class="text-red-500 font-bold mr-2">${{ product.discountPrice }}</span>
-            <span class="line-through text-gray-400">${{ product.originalPrice }}</span>
-          </p>
-          <div class="flex justify-center items-center mt-2">
-            <span v-for="n in product.rating" :key="n" class="text-yellow-500">&#9733;</span>
-            <span v-for="n in 5 - product.rating" :key="'empty' + n" class="text-gray-300">&#9733;</span>
-            <span class="text-gray-500 ml-2">({{ product.reviews }})</span>
-          </div>
-
-          <!-- Special Badges -->
-          <span v-if="product.new"
-            class="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded text-xs">NEW</span>
-          <button v-if="product.showCart" class="bg-black text-white mt-4 px-4 py-2 rounded">Add To Cart</button>
-        </div>
-      </div>
-      <div class="text-center mt-8">
-        <button class="bg-red-500 text-white px-6 py-2 rounded">View All Products</button>
-      </div>
+      <!-- View All Button -->
+      <button class="btn-view-all">View All Products</button>
     </section>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
-  data() {
-    return {
-      selectedCategory: 3, // 'Camera' is initially selected
-      categories: [
-        { name: "Phones", icon: "https://via.placeholder.com/50" },
-        { name: "Computers", icon: "https://via.placeholder.com/50" },
-        { name: "SmartWatch", icon: "https://via.placeholder.com/50" },
-        { name: "Camera", icon: "https://via.placeholder.com/50" },
-        { name: "HeadPhones", icon: "https://via.placeholder.com/50" },
-        { name: "Gaming", icon: "https://via.placeholder.com/50" },
-      ],
-      bestSellingProducts: [
-        {
-          name: "The north coat",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 260,
-          originalPrice: 360,
-        },
-        {
-          name: "Gucci duffle bag",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 960,
-          originalPrice: 1160,
-        },
-        {
-          name: "RGB liquid CPU Cooler",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 160,
-          originalPrice: 170,
-        },
-        {
-          name: "Small BookSelf",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 360,
-          originalPrice: 380,
-        },
-      ],
-      products: [
-        {
-          name: "Breed Dry Dog Food",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 100,
-          originalPrice: 120,
-          rating: 2,
-          reviews: 35,
-          new: false,
-          showCart: false,
-        },
-        {
-          name: "CANON EOS DSLR Camera",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 360,
-          originalPrice: 500,
-          rating: 4,
-          reviews: 95,
-          new: false,
-          showCart: true,
-        },
-        {
-          name: "ASUS FHD Gaming Laptop",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 700,
-          originalPrice: 850,
-          rating: 5,
-          reviews: 325,
-          new: false,
-          showCart: false,
-        },
-        {
-          name: "Curology Product Set",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 500,
-          originalPrice: 600,
-          rating: 4,
-          reviews: 145,
-          new: false,
-          showCart: false,
-        },
-        {
-          name: "Kids Electric Car",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 960,
-          originalPrice: 1100,
-          rating: 5,
-          reviews: 65,
-          new: true,
-          showCart: false,
-        },
-        {
-          name: "Jr. Zoom Soccer Cleats",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 1160,
-          originalPrice: 1400,
-          rating: 4,
-          reviews: 35,
-          new: true,
-          showCart: false,
-        },
-        {
-          name: "GP11 Shooter USB Gamepad",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 660,
-          originalPrice: 750,
-          rating: 4,
-          reviews: 55,
-          new: true,
-          showCart: false,
-        },
-        {
-          name: "Quilted Satin Jacket",
-          image: "https://via.placeholder.com/150",
-          discountPrice: 660,
-          originalPrice: 800,
-          rating: 4,
-          reviews: 55,
-          new: false,
-          showCart: false,
-        },
-      ],
-    };
-  },
+  name: "FlashSales",
 };
 </script>
 
 <style scoped>
-button {
-  outline: none;
-  transition: all 0.3s;
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-button:hover {
-  opacity: 0.8;
+/* Page Container */
+.flash-sales-page {
+  background-color: #fff;
+  min-height: 100vh;
+  padding: 20px 50px;
+}
+
+/* Flash Sales Section */
+.flash-sales {
+  text-align: center;
+}
+
+.flash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-text {
+  text-align: left;
+}
+
+.today-text {
+  color: #e53935;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.flash-title {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+/* Timer Section */
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timer-box {
+  background-color: #f2f2f2;
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-width: 70px;
+  text-align: center;
+}
+
+.timer-value {
+  display: block;
+  font-size: 24px;
+  color: #e53935;
+  font-weight: bold;
+}
+
+.timer-label {
+  font-size: 12px;
+  color: #888;
+}
+
+.dots {
+  font-size: 28px;
+  color: #e53935;
+  margin: 0 5px;
+  line-height: 1;
+}
+
+/* Flash Items */
+.flash-items {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.flash-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 22%;
+}
+
+.flash-item img {
+  width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.discount {
+  background-color: #e53935;
+  color: white;
+  padding: 3px 6px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 12px;
+  border-radius: 3px;
+}
+
+.product-name {
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #e53935;
+}
+
+.price del {
+  color: #888;
+  margin-left: 5px;
+}
+
+.rating {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.btn-cart {
+  margin-top: 10px;
+  background-color: #333;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.btn-view-all {
+  margin-top: 30px;
+  background-color: #e53935;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-radius: 5px;
+  font-size: 14px;
 }
 </style>
