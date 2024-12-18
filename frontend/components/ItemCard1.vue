@@ -1,232 +1,175 @@
+<script setup lang="ts">
+interface Category {
+  name: string;
+  icon: string;
+}
+
+interface Product {
+  name: string;
+  image: string;
+  discountPrice: number;
+  originalPrice: number;
+  rating?: number;
+  reviews?: number;
+  new?: boolean;
+  showCart?: boolean;
+}
+
+const selectedCategory = ref(3);
+
+const categories: Category[] = [
+  { name: "Phones", icon: "/api/placeholder/50/50" },
+  { name: "Computers", icon: "/api/placeholder/50/50" },
+  { name: "SmartWatch", icon: "/api/placeholder/50/50" },
+  { name: "Camera", icon: "/api/placeholder/50/50" },
+  { name: "HeadPhones", icon: "/api/placeholder/50/50" },
+  { name: "Gaming", icon: "/api/placeholder/50/50" },
+];
+
+const bestSellingProducts: Product[] = [
+  {
+    name: "The north coat",
+    image: "/api/placeholder/150/150",
+    discountPrice: 260,
+    originalPrice: 360,
+  },
+  {
+    name: "Gucci duffle bag",
+    image: "/api/placeholder/150/150",
+    discountPrice: 960,
+    originalPrice: 1160,
+  },
+  {
+    name: "RGB liquid CPU Cooler",
+    image: "/api/placeholder/150/150",
+    discountPrice: 160,
+    originalPrice: 170,
+  },
+  {
+    name: "Small BookSelf",
+    image: "/api/placeholder/150/150",
+    discountPrice: 360,
+    originalPrice: 380,
+  },
+];
+
+const products: Product[] = [
+  {
+    name: "Breed Dry Dog Food",
+    image: "/api/placeholder/150/150",
+    discountPrice: 100,
+    originalPrice: 120,
+    rating: 2,
+    reviews: 35,
+    new: false,
+    showCart: false,
+  },
+  // ... rest of the products array
+];
+</script>
+
 <template>
-    <div class="container mx-auto px-4 py-6">
-      <!-- Categories Section -->
-      <section class="mb-8">
-        <h2 class="text-red-500 font-bold mb-3 flex items-center">
-          <span class="inline-block w-2 h-6 bg-red-500 mr-2"></span>
-          Categories
-        </h2>
-        <h3 class="text-2xl font-semibold mb-6">Browse By Category</h3>
-        <div class="grid grid-cols-6 gap-4">
-          <div v-for="(category, index) in categories" :key="index" class="text-center">
-            <div
-              :class="['rounded-lg p-4 border cursor-pointer', selectedCategory === index ? 'bg-red-500 text-white' : 'bg-gray-100']"
-              @click="selectedCategory = index">
-              <img :src="category.icon" alt="category.name" class="mx-auto mb-2 w-8 h-8" />
-              <p>{{ category.name }}</p>
+  <div class="container max-w-7xl mx-auto px-4 py-6">
+    <!-- Categories Section -->
+    <section class="mb-8">
+      <SectionHeader title="Categories" subtitle="Browse By Category" />
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+        <Button v-for="(category, index) in categories" :key="index" :class="['p-button-text flex flex-col items-center p-4',
+          selectedCategory === index ? 'p-button-danger' : '']" @click="selectedCategory = index">
+          <img :src="category.icon" :alt="category.name" class="mb-2 w-8 h-8" />
+          <span>{{ category.name }}</span>
+        </Button>
+      </div>
+    </section>
+
+    <!-- Best Selling Products -->
+    <section class="mb-8">
+      <SectionHeader title="This Month" subtitle="Best Selling Products">
+        <template #action>
+          <Button label="View All" severity="danger" />
+        </template>
+      </SectionHeader>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <Card v-for="(product, index) in bestSellingProducts" :key="index" class="relative">
+          <template #header>
+            <div class="relative">
+              <img :src="product.image" :alt="product.name" class="w-full h-48 object-cover" />
+              <div class="absolute top-2 right-2 flex gap-2">
+                <Button icon="pi pi-heart" rounded severity="danger" text />
+                <Button icon="pi pi-eye" rounded severity="danger" text />
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-  
-      <!-- Best Selling Products -->
-      <section>
-        <h2 class="text-red-500 font-bold mb-3 flex items-center">
-          <span class="inline-block w-2 h-6 bg-red-500 mr-2"></span>
-          This Month
-        </h2>
-        <div class="flex justify-between mb-6">
-          <h3 class="text-2xl font-semibold">Best Selling Products</h3>
-          <button class="bg-red-500 text-white px-4 py-2 rounded">View All</button>
-        </div>
-        <div class="grid grid-cols-4 gap-6">
-          <div v-for="(product, index) in bestSellingProducts" :key="index"
-            class="text-center border p-4 rounded-lg relative">
-            <!-- Heart and Eye Icons -->
-            <button class="absolute top-2 right-8 bg-red-500 text-white p-1 rounded-full">♥</button>
-            <button class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full">👀</button>
-  
-            <!-- Product Image -->
-            <img :src="product.image" alt="product.name" class="mx-auto mb-4 w-28 h-28" />
-  
-            <!-- Product Details -->
+          </template>
+
+          <template #content>
             <h4 class="font-semibold mb-2">{{ product.name }}</h4>
-            <p>
-              <span class="text-red-500 font-bold mr-2">${{ product.discountPrice }}</span>
-              <span class="line-through text-gray-400">${{ product.originalPrice }}</span>
-            </p>
-            <div class="flex justify-center mt-2">
-              <span v-for="n in 5" :key="n" class="text-yellow-500">&#9733;</span>
-              <span class="text-gray-500 ml-2">(65)</span>
+            <div class="flex justify-between items-center">
+              <div>
+                <span class="text-red-500 font-bold">${{ product.discountPrice }}</span>
+                <span class="line-through text-gray-400 ml-2">${{ product.originalPrice }}</span>
+              </div>
+              <Rating :modelValue="5" readonly :cancel="false" />
             </div>
-          </div>
-        </div>
-      </section>
-  
-      <!-- Products Section -->
-      <section class="mt-10">
-        <h2 class="text-red-500 font-bold mb-3 flex items-center">
-          <span class="inline-block w-2 h-6 bg-red-500 mr-2"></span>
-          Our Products
-        </h2>
-        <h3 class="text-2xl font-semibold mb-6">Explore Our Products</h3>
-        <div class="grid grid-cols-4 gap-6">
-          <div v-for="(product, index) in products" :key="index" class="text-center border p-4 rounded-lg relative">
-            <!-- Heart and Eye Icons -->
-            <button class="absolute top-2 right-8 bg-red-500 text-white p-1 rounded-full">♥</button>
-            <button class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full">👁</button>
-  
-            <!-- Product Image -->
-            <img :src="product.image" alt="product.name" class="mx-auto mb-4 w-28 h-28" />
-  
-            <!-- Product Details -->
+          </template>
+        </Card>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section>
+      <SectionHeader title="Our Products" subtitle="Explore Our Products" />
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <Card v-for="(product, index) in products" :key="index" class="relative">
+          <template #header>
+            <div class="relative">
+              <img :src="product.image" :alt="product.name" class="w-full h-48 object-cover" />
+              <Badge v-if="product.new" severity="success" class="absolute top-2 left-2">
+                NEW
+              </Badge>
+              <div class="absolute top-2 right-2 flex gap-2">
+                <Button icon="pi pi-heart" rounded severity="danger" text />
+                <Button icon="pi pi-eye" rounded severity="danger" text />
+              </div>
+            </div>
+          </template>
+
+          <template #content>
             <h4 class="font-semibold mb-2">{{ product.name }}</h4>
-            <p>
-              <span class="text-red-500 font-bold mr-2">${{ product.discountPrice }}</span>
-              <span class="line-through text-gray-400">${{ product.originalPrice }}</span>
-            </p>
-            <div class="flex justify-center items-center mt-2">
-              <span v-for="n in product.rating" :key="n" class="text-yellow-500">&#9733;</span>
-              <span v-for="n in 5 - product.rating" :key="'empty' + n" class="text-gray-300">&#9733;</span>
-              <span class="text-gray-500 ml-2">({{ product.reviews }})</span>
+            <div class="mb-2">
+              <span class="text-red-500 font-bold">${{ product.discountPrice }}</span>
+              <span class="line-through text-gray-400 ml-2">${{ product.originalPrice }}</span>
             </div>
-  
-            <!-- Special Badges -->
-            <span v-if="product.new"
-              class="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded text-xs">NEW</span>
-            <button v-if="product.showCart" class="bg-black text-white mt-4 px-4 py-2 rounded">Add To Cart</button>
-          </div>
-        </div>
-        <div class="text-center mt-8">
-          <button class="bg-red-500 text-white px-6 py-2 rounded">View All Products</button>
-        </div>
-      </section>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        selectedCategory: 3, // 'Camera' is initially selected
-        categories: [
-          { name: "Phones", icon: "https://via.placeholder.com/50" },
-          { name: "Computers", icon: "https://via.placeholder.com/50" },
-          { name: "SmartWatch", icon: "https://via.placeholder.com/50" },
-          { name: "Camera", icon: "https://via.placeholder.com/50" },
-          { name: "HeadPhones", icon: "https://via.placeholder.com/50" },
-          { name: "Gaming", icon: "https://via.placeholder.com/50" },
-        ],
-        bestSellingProducts: [
-          {
-            name: "The north coat",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 260,
-            originalPrice: 360,
-          },
-          {
-            name: "Gucci duffle bag",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 960,
-            originalPrice: 1160,
-          },
-          {
-            name: "RGB liquid CPU Cooler",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 160,
-            originalPrice: 170,
-          },
-          {
-            name: "Small BookSelf",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 360,
-            originalPrice: 380,
-          },
-        ],
-        products: [
-          {
-            name: "Breed Dry Dog Food",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 100,
-            originalPrice: 120,
-            rating: 2,
-            reviews: 35,
-            new: false,
-            showCart: false,
-          },
-          {
-            name: "CANON EOS DSLR Camera",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 360,
-            originalPrice: 500,
-            rating: 4,
-            reviews: 95,
-            new: false,
-            showCart: true,
-          },
-          {
-            name: "ASUS FHD Gaming Laptop",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 700,
-            originalPrice: 850,
-            rating: 5,
-            reviews: 325,
-            new: false,
-            showCart: false,
-          },
-          {
-            name: "Curology Product Set",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 500,
-            originalPrice: 600,
-            rating: 4,
-            reviews: 145,
-            new: false,
-            showCart: false,
-          },
-          {
-            name: "Kids Electric Car",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 960,
-            originalPrice: 1100,
-            rating: 5,
-            reviews: 65,
-            new: true,
-            showCart: false,
-          },
-          {
-            name: "Jr. Zoom Soccer Cleats",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 1160,
-            originalPrice: 1400,
-            rating: 4,
-            reviews: 35,
-            new: true,
-            showCart: false,
-          },
-          {
-            name: "GP11 Shooter USB Gamepad",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 660,
-            originalPrice: 750,
-            rating: 4,
-            reviews: 55,
-            new: true,
-            showCart: false,
-          },
-          {
-            name: "Quilted Satin Jacket",
-            image: "https://via.placeholder.com/150",
-            discountPrice: 660,
-            originalPrice: 800,
-            rating: 4,
-            reviews: 55,
-            new: false,
-            showCart: false,
-          },
-        ],
-      };
-    },
-  };
-  </script>
-  
-  <style scoped>
-  button {
-    outline: none;
-    transition: all 0.3s;
-  }
-  
-  button:hover {
-    opacity: 0.8;
-  }
-  </style>
+            <div class="flex justify-between items-center">
+              <Rating :modelValue="product.rating" readonly :cancel="false" />
+              <span class="text-gray-500">({{ product.reviews }})</span>
+            </div>
+            <Button v-if="product.showCart" label="Add To Cart" severity="danger" class="w-full mt-4" />
+          </template>
+        </Card>
+      </div>
+
+      <div class="text-center mt-8">
+        <Button label="View All Products" severity="danger" size="large" />
+      </div>
+    </section>
+  </div>
+</template>
+
+<style lang="postcss" scoped>
+.p-card {
+  @apply hover:shadow-lg transition-shadow;
+}
+
+.p-rating .p-rating-item.p-rating-item-active .p-rating-icon {
+  @apply text-yellow-500;
+}
+
+.p-button.p-button-text:not(.p-button-danger) {
+  @apply text-gray-700 hover:bg-gray-100;
+}
+
+.p-button.p-button-danger.p-button-text:hover {
+  @apply bg-red-100;
+}
+</style>

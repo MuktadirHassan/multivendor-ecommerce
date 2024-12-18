@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto p-4 font-sans">
+  <div class="max-w-7xl mx-auto p-4 font-sans">
     <!-- Header -->
     <header class="flex justify-between items-center py-4 border-b">
       <!-- Logo -->

@@ -1,36 +1,33 @@
 <template>
-   <div class="max-w-6xl mx-auto p-4 font-sans">
-   <!-- Header -->
-   <header class="flex justify-between items-center py-4 border-b">
-     <!-- Logo -->
-     <h5 class="text-2xl font-bold">Sundarban</h5>
+  <div class="max-w-7xl mx-auto p-4 font-sans">
+    <!-- Header -->
+    <header class="flex justify-between items-center py-4 border-b">
+      <!-- Logo -->
+      <h5 class="text-2xl font-bold">Sundarban</h5>
 
-     <!-- Navigation -->
-     <nav class="flex space-x-6">
-       <a href="#" class="text-gray-700 hover:text-black">Home</a>
-       <a href="#" class="text-gray-700 hover:text-black">Contact</a>
-       <a href="#" class="text-gray-700 hover:text-black">About</a>
-       <a href="#" class="text-gray-700 hover:text-black">Sign Up</a>
-     </nav>
+      <!-- Navigation -->
+      <nav class="flex space-x-6">
+        <a href="#" class="text-gray-700 hover:text-black">Home</a>
+        <a href="#" class="text-gray-700 hover:text-black">Contact</a>
+        <a href="#" class="text-gray-700 hover:text-black">About</a>
+        <a href="#" class="text-gray-700 hover:text-black">Sign Up</a>
+      </nav>
 
-     <!-- Search Bar and Icons -->
-     <div class="flex items-center space-x-4">
-       <!-- Search Bar -->
-       <div class="relative">
-         <input
-           type="text"
-           placeholder="What are you looking for?"
-           class="border px-4 py-1 pl-10 w-64 text-gray-600 text-sm rounded"
-         />
-         <i class="fa fa-search absolute left-3 top-2 text-gray-400"></i>
-       </div>
+      <!-- Search Bar and Icons -->
+      <div class="flex items-center space-x-4">
+        <!-- Search Bar -->
+        <div class="relative">
+          <input type="text" placeholder="What are you looking for?"
+            class="border px-4 py-1 pl-10 w-64 text-gray-600 text-sm rounded" />
+          <i class="fa fa-search absolute left-3 top-2 text-gray-400"></i>
+        </div>
 
-       <!-- Icons -->
-       <i class="fa fa-heart text-gray-600 hover:text-black cursor-pointer"></i>
-       <i class="fa fa-shopping-cart text-gray-600 hover:text-black cursor-pointer"></i>
-       <i class="fa fa-user text-gray-600 hover:text-black cursor-pointer"></i>
-     </div>
-   </header>
+        <!-- Icons -->
+        <i class="fa fa-heart text-gray-600 hover:text-black cursor-pointer"></i>
+        <i class="fa fa-shopping-cart text-gray-600 hover:text-black cursor-pointer"></i>
+        <i class="fa fa-user text-gray-600 hover:text-black cursor-pointer"></i>
+      </div>
+    </header>
     <!-- Wishlist Header -->
     <div class="wishlist-header">
       <h3>Wishlist (4)</h3>
@@ -49,8 +46,8 @@
         <!-- Product Details -->
         <div class="product-details">
           <button class="btn btn-dark w-100 add-to-cart">
-  <i class="fa fa-shopping-cart mr-2"></i> Add To Cart
-</button>
+            <i class="fa fa-shopping-cart mr-2"></i> Add To Cart
+          </button>
           <h4>{{ product.name }}</h4>
           <p>
             <span class="price">${{ product.price }}</span>
@@ -60,8 +57,8 @@
       </div>
     </div>
   </div>
-  <WishlistFinal/>
-  <Footer/>
+  <WishlistFinal />
+  <Footer />
 </template>
 
 <script>
