@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 
 import { db } from "./config/database";
 import { AddressController } from "./controllers/address.controller";
@@ -89,7 +90,7 @@ const searchService = new SearchService(
 const searchController = new SearchController(searchService);
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));

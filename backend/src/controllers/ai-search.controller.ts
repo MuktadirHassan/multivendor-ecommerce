@@ -7,11 +7,11 @@ export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
   search = catchAsync(async (req: Request, res: Response) => {
-    const { query } = req.query;
+    const { q } = req.query;
     const filters = req.body;
 
     const results = await this.searchService.searchProducts(
-      query as string,
+      q as string,
       filters
     );
     sendApiResponse(res, 200, "Search results retrieved successfully", results);
