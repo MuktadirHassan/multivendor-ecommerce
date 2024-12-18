@@ -30,11 +30,10 @@
             <Galleria :value="product.images" :showThumbnails="false" :showIndicators="product.images.length > 1"
               :autoPlay="false" class="h-full">
               <template #item="slotProps">
-                <img :src="slotProps.item" :alt="product.name" @error="handleImageError"
-                  class="w-full h-48 object-cover rounded-t-lg" />
+                <img :src="slotProps.item" :alt="product.name" class="w-full h-48 object-cover rounded-t-lg" />
               </template>
               <template #indicator="slotProps">
-                <div class="indicator-dot" :class="{ active: slotProps.active }"></div>
+                <div class="indicator-dot" :class="{ active: slotProps.index }"></div>
               </template>
             </Galleria>
           </div>
@@ -84,9 +83,7 @@ onNuxtReady(() => {
     });
   }, 1000);
 
-  const handleImageError = (e: Event) => {
 
-  };
 });
 
 // fetch products
