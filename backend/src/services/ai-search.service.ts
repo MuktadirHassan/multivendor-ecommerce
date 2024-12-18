@@ -4,6 +4,7 @@ import { CacheService } from "./cache.service";
 import { ProductRepository } from "../repositories/product.repository";
 import { logger } from "../config/logger";
 import { OrderRepository } from "../repositories/order.repository";
+import { ProductFilters } from "../types/filters";
 
 export class SearchService {
   private cache: CacheService;
@@ -16,7 +17,7 @@ export class SearchService {
     this.cache = CacheService.getInstance();
   }
 
-  async searchProducts(query: string, filters?: any) {
+  async searchProducts(query: string, filters?: ProductFilters) {
     const cacheKey = `search:${query}:${JSON.stringify(filters)}`;
 
     // Check cache first
@@ -27,7 +28,9 @@ export class SearchService {
     }
 
     // Get base products based on filters
-    const products = await this.productRepository.findWithFilters(filters);
+    const products = await this.productRepository.findWithFilters(
+      filters || {}
+    );
 
     // Perform semantic search
     const results = await this.gemini.searchProducts(query, products);
