@@ -13,6 +13,7 @@
     "@nuxt/fonts": "^0.10.2",
     "@nuxtjs/supabase": "^1.4.1",
     "@primevue/themes": "^4.2.1",
+    "lucide-vue-next": "^0.468.0",
     "nuxt": "^3.14.0",
     "primevue": "^4.2.1",
     "vue": "latest",

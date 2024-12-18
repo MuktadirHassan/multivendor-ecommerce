@@ -1,239 +1,122 @@
 <template>
-  <div class="flash-sales-page">
-    <!-- Flash Sales Section -->
-    <section class="flash-sales">
-      <!-- Header -->
-      <div class="flash-header">
-        <div class="header-text">
-          <h4 class="today-text">Today's</h4>
-          <h2 class="flash-title">Flash Sales</h2>
-        </div>
-        <!-- Timer -->
-        <div class="timer">
-          <div class="timer-box">
-            <span class="timer-value">03</span>
-            <span class="timer-label">Days</span>
-          </div>
-          <div class="dots">:</div>
-          <div class="timer-box">
-            <span class="timer-value">23</span>
-            <span class="timer-label">Hours</span>
-          </div>
-          <div class="dots">:</div>
-          <div class="timer-box">
-            <span class="timer-value">19</span>
-            <span class="timer-label">Minutes</span>
-          </div>
-          <div class="dots">:</div>
-          <div class="timer-box">
-            <span class="timer-value">56</span>
-            <span class="timer-label">Seconds</span>
-          </div>
-        </div>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h4 class="text-red-600 text-xl font-bold">Today's</h4>
+        <h2 class="text-3xl font-bold">Flash Sales</h2>
       </div>
 
-      <!-- Flash Sale Items -->
-      <div class="flash-items">
-        <!-- Product 1 -->
-        <div class="flash-item">
-          <span class="discount">-44%</span>
-          <img src="https://via.placeholder.com/150" alt="Gamepad" />
-          <p class="product-name">HAVIT HV-G92 Gamepad</p>
-          <p class="price">$120 <del>$160</del></p>
-          <div class="rating">★★★★★ (88)</div>
-        </div>
-        <!-- Product 2 -->
-        <div class="flash-item">
-          <span class="discount">-30%</span>
-          <img src="https://via.placeholder.com/150" alt="Keyboard" />
-          <p class="product-name">AK-900 Wired Keyboard</p>
-          <p class="price">$90 <del>$130</del></p>
-          <button class="btn-cart">Add To Cart</button>
-        </div>
-        <!-- Product 3 -->
-        <div class="flash-item">
-          <span class="discount">-50%</span>
-          <img src="https://via.placeholder.com/150" alt="Monitor" />
-          <p class="product-name">IPS LCD Gaming Monitor</p>
-          <p class="price">$370 <del>$400</del></p>
-          <div class="rating">★★★★★ (99)</div>
-        </div>
-        <!-- Product 4 -->
-        <div class="flash-item">
-          <span class="discount">-30%</span>
-          <img src="https://via.placeholder.com/150" alt="Chair" />
-          <p class="product-name">S-Series Comfort Chair</p>
-          <p class="price">$375 <del>$450</del></p>
-          <div class="rating">★★★★☆ (49)</div>
-        </div>
+      <div class="flex items-center gap-4">
+        <template v-for="(unit, index) in timeUnits" :key="unit.label">
+          <Card class="bg-gray-50 w-20">
+            <template #content>
+              <div class="text-center">
+                <span class="block text-2xl font-bold text-red-600">{{ unit.value }}</span>
+                <span class="text-sm text-gray-500">{{ unit.label }}</span>
+              </div>
+            </template>
+          </Card>
+          <span v-if="index < timeUnits.length - 1" class="text-2xl text-red-600">:</span>
+        </template>
       </div>
+    </div>
 
-      <!-- View All Button -->
-      <button class="btn-view-all">View All Products</button>
-    </section>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <Card v-for="product in products" :key="product.id" class="relative">
+        <template #header>
+          <Badge v-if="product.discount" :value="`-${product.discount}%`" severity="danger"
+            class="absolute top-2 left-2 z-10" />
+          <div class="relative w-full h-48 bg-gray-100">
+            <Galleria :value="product.images" :showThumbnails="false" :showIndicators="product.images.length > 1"
+              :autoPlay="false" class="h-full">
+              <template #item="slotProps">
+                <img :src="slotProps.item" :alt="product.name" @error="handleImageError"
+                  class="w-full h-48 object-cover rounded-t-lg" />
+              </template>
+              <template #indicator="slotProps">
+                <div class="indicator-dot" :class="{ active: slotProps.active }"></div>
+              </template>
+            </Galleria>
+          </div>
+        </template>
+        <template #content>
+          <h3 class="text-sm font-medium mb-1">{{ product.name }}</h3>
+          <p v-if="product.description" class="text-xs text-gray-500 mb-2 line-clamp-2">
+            {{ product.description }}
+          </p>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-lg font-bold text-red-600">
+              ${{ (product.price * (1 - product.discount / 100)).toFixed(2) }}
+            </span>
+            <del class="text-gray-500">${{ product.price }}</del>
+          </div>
+          <div class="flex items-center justify-between text-sm text-gray-500 mb-2">
+            <span>Stock: {{ product.stock }}</span>
+            <Rating v-if="product.rating" :modelValue="product.rating" :readonly="true" :cancel="false" />
+          </div>
+          <Button v-if="product.stock > 0" label="Add To Cart" severity="secondary" class="mt-3 w-full" />
+          <Button v-else label="Out of Stock" severity="secondary" disabled class="mt-3 w-full" />
+        </template>
+      </Card>
+    </div>
+
+    <div class="text-center">
+      <Button label="View All Products" severity="danger" size="large" />
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "FlashSales",
-};
+<script setup lang="ts">
+
+const timeUnits = ref([
+  { value: '03', label: 'Days' },
+  { value: '23', label: 'Hours' },
+  { value: '19', label: 'Minutes' },
+  { value: '56', label: 'Seconds' }
+]);
+
+// update timer every second
+onNuxtReady(() => {
+  setInterval(() => {
+    timeUnits.value = timeUnits.value.map(unit => {
+      const value = parseInt(unit.value);
+      return { ...unit, value: value > 0 ? (value - 1).toString().padStart(2, '0') : '00' };
+    });
+  }, 1000);
+
+  const handleImageError = (e: Event) => {
+
+  };
+});
+
+// fetch products
+const featuredProducts = await useProductService().getFeaturedProducts();
+const products = ref(featuredProducts?.data);
+
 </script>
 
 <style scoped>
-/* General Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+.indicator-dot {
+  @apply w-2 h-2 rounded-full bg-gray-300 mx-1 cursor-pointer;
 }
 
-/* Page Container */
-.flash-sales-page {
-  background-color: #fff;
-  min-height: 100vh;
-  padding: 20px 50px;
+.indicator-dot.active {
+  @apply bg-red-600;
 }
 
-/* Flash Sales Section */
-.flash-sales {
-  text-align: center;
+:deep(.p-galleria) {
+  @apply h-full;
 }
 
-.flash-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
+:deep(.p-galleria-item-wrapper) {
+  @apply h-full;
 }
 
-.header-text {
-  text-align: left;
+:deep(.p-galleria-item-container) {
+  @apply h-full;
 }
 
-.today-text {
-  color: #e53935;
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.flash-title {
-  font-size: 32px;
-  font-weight: bold;
-}
-
-/* Timer Section */
-.timer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.timer-box {
-  background-color: #f2f2f2;
-  border-radius: 8px;
-  padding: 10px 12px;
-  min-width: 70px;
-  text-align: center;
-}
-
-.timer-value {
-  display: block;
-  font-size: 24px;
-  color: #e53935;
-  font-weight: bold;
-}
-
-.timer-label {
-  font-size: 12px;
-  color: #888;
-}
-
-.dots {
-  font-size: 28px;
-  color: #e53935;
-  margin: 0 5px;
-  line-height: 1;
-}
-
-/* Flash Items */
-.flash-items {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-}
-
-.flash-item {
-  border: 1px solid #ddd;
-  padding: 15px;
-  text-align: center;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  position: relative;
-  width: 22%;
-}
-
-.flash-item img {
-  width: 100%;
-  max-height: 120px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-
-.discount {
-  background-color: #e53935;
-  color: white;
-  padding: 3px 6px;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  font-size: 12px;
-  border-radius: 3px;
-}
-
-.product-name {
-  font-size: 14px;
-  margin: 10px 0;
-}
-
-.price {
-  font-size: 16px;
-  font-weight: bold;
-  color: #e53935;
-}
-
-.price del {
-  color: #888;
-  margin-left: 5px;
-}
-
-.rating {
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-.btn-cart {
-  margin-top: 10px;
-  background-color: #333;
-  color: white;
-  padding: 6px 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  border-radius: 4px;
-}
-
-.btn-view-all {
-  margin-top: 30px;
-  background-color: #e53935;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  text-transform: uppercase;
-  border-radius: 5px;
-  font-size: 14px;
+:deep(.p-galleria-item) {
+  @apply h-full;
 }
 </style>

@@ -17,11 +17,7 @@
       <div class="flex items-center space-x-4">
         <!-- Search Input -->
         <div class="relative">
-          <input
-            type="text"
-            placeholder="What are you looking for?"
-            class="border rounded px-3 py-1 pl-10 w-64"
-          />
+          <input type="text" placeholder="What are you looking for?" class="border rounded px-3 py-1 pl-10 w-64" />
           <i class="fa fa-search text-gray-500 absolute left-3 top-2.5"></i>
         </div>
 
@@ -43,22 +39,13 @@
       <div class="flex space-x-4">
         <!-- Left Side Thumbnails -->
         <div class="flex flex-col space-y-4">
-          <img
-            v-for="(image, index) in thumbnails"
-            :key="index"
-            :src="image"
-            alt="Thumbnail"
-            class="w-20 h-20 border rounded cursor-pointer"
-          />
+          <img v-for="(image, index) in thumbnails" :key="index" :src="image" alt="Thumbnail"
+            class="w-20 h-20 border rounded cursor-pointer" />
         </div>
 
         <!-- Main Product Image -->
         <div>
-          <img
-            src="https://via.placeholder.com/400x400"
-            alt="Main Product"
-            class="w-96 h-96 border rounded"
-          />
+          <img src="https://via.placeholder.com/400x400" alt="Main Product" class="w-96 h-96 border rounded" />
         </div>
       </div>
 
@@ -86,27 +73,17 @@
         <!-- Size Selector -->
         <div class="flex items-center space-x-2">
           <span>Size:</span>
-          <button
-            v-for="size in sizes"
-            :key="size"
-            :class="[ 
-              'px-3 py-1 border rounded cursor-pointer',
-              selectedSize === size ? 'border-black' : 'border-gray-300'
-            ]"
-            @click="selectedSize = size"
-          >
+          <button v-for="size in sizes" :key="size" :class="[
+            'px-3 py-1 border rounded cursor-pointer',
+            selectedSize === size ? 'border-black' : 'border-gray-300'
+          ]" @click="selectedSize = size">
             {{ size }}
           </button>
         </div>
 
         <!-- Quantity Selector -->
         <div class="flex items-center space-x-4">
-          <input
-            type="number"
-            min="1"
-            v-model="quantity"
-            class="border w-16 rounded px-2 py-1"
-          />
+          <input type="number" min="1" v-model="quantity" class="border w-16 rounded px-2 py-1" />
           <button class="bg-red-500 text-white px-6 py-2 rounded">Buy Now</button>
         </div>
 
@@ -128,12 +105,11 @@
       </div>
     </div>
   </div>
-  <ProductPart1/>
-  <Footer/>
+  <ProductPart1 />
+  <Footer />
 </template>
 
 <script>
-import Footer from '~/components/Footer.vue';
 
 export default {
   name: "ProductPage",
