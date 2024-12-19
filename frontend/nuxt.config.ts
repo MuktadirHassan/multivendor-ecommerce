@@ -12,7 +12,13 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@nuxt/fonts", "@primevue/nuxt-module", "@vueuse/nuxt"],
+  modules: [
+    "@nuxt/fonts",
+    "@primevue/nuxt-module",
+    "@vueuse/nuxt",
+    "@pinia/nuxt",
+    "@sidebase/nuxt-auth",
+  ],
   fonts: {
     experimental: {
       processCSSVariables: true,
@@ -38,5 +44,16 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.API_BASE_URL || "http://localhost:5000",
     },
+  },
+  auth: {
+    isEnabled: true,
+    // globalAppMiddleware: true,
+    // disableServerSideAuth: false,
+    // originEnvKey: "AUTH_ORIGIN",
+    // baseURL: "http://localhost:3000/api/auth",
+    // sessionRefresh: {
+    //   enablePeriodically: true,
+    //   enableOnWindowFocus: true,
+    // },
   },
 });

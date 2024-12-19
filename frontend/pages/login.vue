@@ -1,94 +1,106 @@
+<!-- pages/login.vue -->
 <template>
-  <div class="container">
-    <div class="logo">Sundarban</div>
-    <div class="form-container">
-      <h2>Sign in</h2>
-      <form @submit.prevent="handleSubmit">
-        <input type="email" v-model="email" placeholder="Email or Phone Number" required />
-        <input type="password" v-model="password" placeholder="Password" required />
-        <button type="submit" class="btn">Login</button>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50">
+    <div class="max-w-md w-full space-y-8 p-8">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold text-gray-900">Sign in to your account</h2>
+      </div>
+
+      <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
+        <div class="space-y-4">
+          <div>
+            <InputText v-model="email" type="email" class="w-full" :class="{ 'p-invalid': v$.email.$error }"
+              placeholder="Email address" />
+            <small class="text-red-500" v-if="v$.email.$error">
+              {{ v$.email.$errors[0].$message }}
+            </small>
+          </div>
+
+          <div>
+            <Password v-model="password" :feedback="false" class="w-full" :class="{ 'p-invalid': v$.password.$error }"
+              placeholder="Password" toggleMask />
+            <small class="text-red-500" v-if="v$.password.$error">
+              {{ v$.password.$errors[0].$message }}
+            </small>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <Checkbox v-model="rememberMe" :binary="true" />
+            <label class="ml-2 text-sm text-gray-600">Remember me</label>
+          </div>
+          <div class="text-sm">
+            <NuxtLink to="/forgot-password" class="text-blue-600 hover:text-blue-500">
+              Forgot password?
+            </NuxtLink>
+          </div>
+        </div>
+
+        <div>
+          <Button type="submit" :loading="loading" label="Sign in" class="w-full" />
+        </div>
       </form>
-      <a href="#">Forgot Password?</a>
+
+      <div class="text-center mt-4">
+        <p class="text-sm text-gray-600">
+          Don't have an account?
+          <NuxtLink to="/register" class="text-blue-600 hover:text-blue-500">
+            Sign up
+          </NuxtLink>
+        </p>
+      </div>
     </div>
+
+    <Toast position="top-center" />
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      email: '',
-      password: '',
-    };
-  },
-  methods: {
-    handleSubmit() {
-      alert(`Logged in with Email: ${this.email}`);
-    },
-  },
-};
-</script>
+<script setup lang="ts">
+import { useVuelidate } from '@vuelidate/core'
+import { required, email as validateEmail } from '@vuelidate/validators'
+const { signIn } = useAuth()
 
-<style scoped>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100vh;
+definePageMeta({
+  layout: 'auth',
+  middleware: 'auth'
+})
+
+const loading = ref(false)
+const email = ref('')
+const password = ref('')
+const rememberMe = ref(false)
+const toast = useToast()
+
+const rules = {
+  email: { required, validateEmail },
+  password: { required }
 }
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
+
+const v$ = useVuelidate(rules, { email, password })
+
+const handleLogin = async () => {
+  try {
+    loading.value = true
+    const isValid = await v$.value.$validate()
+
+    if (!isValid) return
+
+    await signIn("credentials", {
+      email: email.value,
+      password: password.value,
+      rememberMe: rememberMe.value
+    })
+  } catch (error: any) {
+    const message = error.response?.data.message || error.message
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: message || 'Login failed',
+      life: 3000
+    })
+  } finally {
+    loading.value = false
+  }
 }
-.logo {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-.form-container {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  width: 300px;
-  text-align: center;
-}
-.form-container h2 {
-  margin-bottom: 20px;
-  font-size: 20px;
-}
-.form-container input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-.form-container .btn {
-  width: 100%;
-  padding: 10px;
-  background: #ff4d4d;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-.form-container .btn:hover {
-  background: #e63939;
-}
-.form-container a {
-  display: block;
-  margin-top: 10px;
-  font-size: 14px;
-  color: #ff4d4d;
-  text-decoration: none;
-}
-</style>
+</script>

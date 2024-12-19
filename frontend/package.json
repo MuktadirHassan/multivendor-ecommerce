@@ -12,8 +12,13 @@
   "dependencies": {
     "@nuxt/fonts": "^0.10.2",
     "@nuxtjs/supabase": "^1.4.1",
+    "@pinia/nuxt": "^0.9.0",
     "@primevue/themes": "^4.2.1",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
+    "chart.js": "^4.4.7",
     "lucide-vue-next": "^0.468.0",
+    "next-auth": "~4.21.1",
     "nuxt": "^3.14.0",
     "pinia": "^2.3.0",
     "primeicons": "^7.0.0",
@@ -23,11 +28,13 @@
   },
   "devDependencies": {
     "@primevue/nuxt-module": "^4.2.1",
+    "@sidebase/nuxt-auth": "0.7.2",
     "@vueuse/core": "^11.2.0",
     "@vueuse/nuxt": "^11.2.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "unplugin-vue-macros": "^2.13.6"
-  }
+  },
+  "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c"
 }
