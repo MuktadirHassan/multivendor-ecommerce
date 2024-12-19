@@ -22,7 +22,7 @@ export default NuxtAuthHandler({
         if (!data) {
           return null;
         }
-        return data.user;
+        return data.token;
       },
     }),
   ],

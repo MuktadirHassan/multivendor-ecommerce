@@ -1,6 +1,8 @@
 import type { User, LoginRequest, RegisterRequest } from "~/types/user";
 import type { Address } from "~/types/address";
 
+export const auth_token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0OSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzM0NTY3NzYxLCJleHAiOjE3MzQ2NTQxNjF9.EjaET1MdSaIKyTn0sCXhgKbdh5_TabSHI9at8tcOV1Q";
 export const useUserService = () => {
   const config = useRuntimeConfig();
   const baseUrl = config.public.apiBase;
@@ -79,6 +81,9 @@ export const useUserService = () => {
       }>(`${baseUrl}/auth/me`, {
         method: "PUT",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${auth_token}`,
+        },
       });
 
       if (error.value) throw error.value;
